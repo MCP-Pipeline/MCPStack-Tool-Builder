@@ -173,7 +173,10 @@ It reports `package dirs`, `entry points`, and `placeholder` status.
 
 Here you go! 🎉 You now have a working `MCPStack` tool skeleton ready to customise.
 From here, edit `src/mcpstack_<your_tool_name>/tool.py` with the actions your MCP is aimed to be doing,
-and `cli.py` to implement your configurablity logic. Refer to the `MCPStack` documentation for more details on how to implement your tool logic.
+and `cli.py` to implement your configurability logic. Remove a couple of files and folders not necessary as per the template
+and you may be good to go to submit this to the org or to play with it yourself!
+
+Refer to the `MCPStack` documentation for more details on how to implement your tool logic.
 
 ## 🔐 License
 
