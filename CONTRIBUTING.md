@@ -1,6 +1,33 @@
-# How to add new stuff to MCPStack-Tool?
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+  <h1 align="center">
+    <br>
+    <a href="#"><img src="assets/COVER.png" alt="MCPStack Tool" width="100%"></a>
+    <br>
+    MCPStack Tool Builder
+    <br>
+  </h1>
+  <h4 align="center">A Template To Fasten The Creation of MCP-Stack MCP Tools</h4>
+</div>
 
-Hey there! Appreciated your venue here! Want to build stuff on top of MCPStack-Tool?
+<div align="center">
+
+<a href="https://pre-commit.com/">
+  <img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-1f6feb?style=for-the-badge&logo=pre-commit">
+</a>
+<img alt="ruff" src="https://img.shields.io/badge/Ruff-lint%2Fformat-9C27B0?style=for-the-badge&logo=ruff&logoColor=white">
+<img alt="python" src="https://img.shields.io/badge/Python-3.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white">
+<img alt="license" src="https://img.shields.io/badge/License-MIT-success?style=for-the-badge">
+
+</div>
+
+> [!IMPORTANT]
+> If you have not been across the MCPStack main orchestrator repository, please start
+> there: [View Org](https://github.com/MCP-Pipeline)
+
+# Want To Improve This Template?
+
+Hey there! Appreciated your venue here! Want to build stuff on top of `MCPStack-Tool-Builder`?
 
 ## Prerequisites
 
@@ -14,10 +41,10 @@ Hey there! Appreciated your venue here! Want to build stuff on top of MCPStack-T
 Clone the repository and sync dependencies:
 
 ```bash
-git clone git@github.com:<you>/mcpstack-tool.git
-cd mcpstack-tool
+git clone https://github.com/MCP-Pipeline/MCPStack-Tool-Builder.git
+cd MCPStack-Tool-Builder
 uv sync --all-extras
-pre-commit install
+uv run pre-commit install
 
 # uv automatically installs in editable mode.
 # To manage dependencies:
@@ -45,8 +72,7 @@ Tests
 Running Checks
 
 ```bash
-pre-commit run --all-files
-python -m mcpstack_tool.cli --health
+uv run pre-commit run --all-files
 ```
 
 PR Expectations
