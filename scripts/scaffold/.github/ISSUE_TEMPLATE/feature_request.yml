@@ -1,5 +1,5 @@
 name: "💡 Feature Request"
-description: Suggest a new feature or enhancement for mcpstack-tool.
+description: Suggest a new feature or enhancement for mcpstack-tool-builder.
 title: "💡 [FEAT] - <title>"
 labels:
   - "feature"
@@ -8,9 +8,9 @@ body:
     attributes:
       value: |
         <p align="center">
-          <img src="https://miro.medium.com/v2/resize:fit:400/1*QEps725rQjfgqNnlbRYb1g.png" alt="Harvard MIT HST Logo">
+          <img src="https://github.com/MCP-Pipeline/MCPStack-Tool-Builder/raw/main/assets/COVER.png" alt="COVER">
           <br>
-          <em>mcpstack-tool project</em>
+          <em>mcpstack-tool-builder project</em>
         </p>
   - type: checkboxes
     id: checks
