@@ -19,8 +19,8 @@ We will acknowledge receipt within 7 days and aim to provide a resolution or mit
 
 ## Scope and Considerations
 
-- **Tool Combinations**: MCPStack-Tool is designed to compose with other MCP tools. Unexpected or unsafe interactions between tools cannot be predicted or prevented at the MCPStack-Tool level. The responsibility for safe orchestration rests with the user.  
-- **Data Breach Risks**: MCPStack-Tool runs locally and does not send data to external services. There are no cloud communications by default, so conventional remote data breaches do not apply.  
+- **Tool Combinations**: MCPStack-Tool-Builder is designed to compose with other MCP tools. Unexpected or unsafe interactions between tools cannot be predicted or prevented at the MCPStack-Tool level. The responsibility for safe orchestration rests with the user.  
+- **Data Breach Risks**: MCPStack-Tool-Builder runs locally and does not send data to external services. There are no cloud communications by default, so conventional remote data breaches do not apply.  
 - **GitHub Issues and Pull Requests**: Do not upload sensitive data (such as private datasets, logs, or credentials) when filing issues or submitting pull requests. Use synthetic or anonymized examples instead.
 
 ## Good Practices
