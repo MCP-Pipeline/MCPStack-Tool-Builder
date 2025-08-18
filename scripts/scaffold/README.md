@@ -21,8 +21,6 @@
 
 </div>
 
----
-
 > [!IMPORTANT]
 > If you have not been across the MCPStack main orchestrator repository, please start
 > there: [View Org](https://github.com/MCP-Pipeline)
@@ -43,8 +41,6 @@ On the other hand, `MCPStack` is a framework that implements the protocol, and m
 developers to create pipelines by stacking MCP tools of interest and launching them all in Claude Desktop. 
 This allows the LLM to use all the tools stacked, and of course, if a tool is not of interest, do not include it in the
 pipeline and the LLM won't have access to it.
-
----
 
 ## Installation
 
@@ -75,10 +71,6 @@ Using `pip`:
 pip install -e .[dev]
 ```
 
-> **Note**  
-> Python `3.9+` is supported. If you have project-specific constraints, adjust the `pyproject.toml` accordingly.
-
-
 ### Install pre-commit hooks
 
 Via `UV`:
@@ -93,21 +85,16 @@ Via `pip`:
 pre-commit install
 ```
 
----
-
 ## Create Your Tool's Skeleton
 
 Once dependencies are installed, you can use the `mcpstack_tool` CLI to bootstrap and customise your tool’s skeleton.  
-Every commands is run with `uv run mcpstack_tool.py` or `python mcpstack_tool.py` if you are not using `UV`, followed by the command you want to run.
-
-As follows
+Every commands is run with `uv run mcpstack_tool.py` or `python mcpstack_tool.py` if you are not using `UV`, followed by the command you want to run; as follows:
 
 <img src="assets/readme/help.gif" width="61.8%" align="left" style="border-radius: 10px;"/>
 
-1. `Help` Banner
+### `Help` Banner
 
 Run with `--help` or `-h` to display the banner and see all available commands.
-
 
 ```bash
 uv run mcpstack_tool.py --help
@@ -115,9 +102,11 @@ uv run mcpstack_tool.py --help
 
 <br clear="left">
 
+<br />
+
 <img src="assets/readme/init.gif" width="61.8%" align="right" style="border-radius: 10px;"/>
 
-2. `Init`
+### `Init`
 
 init starts an interactive prompt command-line-based process to generate your tool configuration.
 It will ask you for values like `tool_slug`, `class_name`, and `env_prefix`.
@@ -125,34 +114,42 @@ It will ask you for values like `tool_slug`, `class_name`, and `env_prefix`.
 
 <br clear="right">
 
+<br />
+
 <img src="assets/readme/preview.gif" width="61.8%" align="left" style="border-radius: 10px;"/>
 
-3. `Preview`
+### `Preview`
 
 preview shows you the replacements that would be applied across the codebase and displays an example diff.
 Note this could be also run from the `init`.
 
 <br clear="left">
 
+<br />
+
 <img src="assets/readme/apply.gif" width="61.8%" align="right" style="border-radius: 10px;"/>
 
-4. `Apply`
+### `Apply`
 
 Once happy, use apply to perform replacements and rename the package directory. Note this could be also run from the `init`.
 
 <br clear="right">
 
+<br />
+
 <img src="assets/readme/validate.gif" width="61.8%" align="left" style="border-radius: 10px;"/>
 
-5. `Validate`
+### `Validate`
 
 Run validate to ensure placeholders were replaced correctly (or to check if any remain).
 
 <br clear="left">
 
+<br />
+
 <img src="assets/readme/reset.gif" width="61.8%" align="right" style="border-radius: 10px;"/>
 
-6. `Reset` (Optional)
+### `Reset` (Optional)
 
 Need to start fresh? Restore everything back from the scaffold with reset.
 
@@ -161,9 +158,11 @@ Need to start fresh? Restore everything back from the scaffold with reset.
 
 <br clear="right">
 
+<br />
+
 <img src="assets/readme/doctor.gif" width="61.8%" align="left" style="border-radius: 10px;"/>
 
-7. `Doctor`
+### `Doctor`
 
 Finally, check the health of your repository with doctor.
 It reports `package dirs`, `entry points`, and `placeholder` status.
@@ -174,7 +173,10 @@ It reports `package dirs`, `entry points`, and `placeholder` status.
 
 Here you go! 🎉 You now have a working `MCPStack` tool skeleton ready to customise.
 From here, edit `src/mcpstack_<your_tool_name>/tool.py` with the actions your MCP is aimed to be doing,
-and `cli.py` to implement your configurablity logic. Refer to the `MCPStack` documentation for more details on how to implement your tool logic.
+and `cli.py` to implement your configurability logic. Remove a couple of files and folders not necessary as per the template
+and you may be good to go to submit this to the org or to play with it yourself!
+
+Refer to the `MCPStack` documentation for more details on how to implement your tool logic.
 
 ## 🔐 License
 
