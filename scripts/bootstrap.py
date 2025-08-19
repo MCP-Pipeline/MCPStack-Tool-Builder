@@ -600,8 +600,13 @@ def doctor() -> None:
     pkg_dirs = [p for p in (SRC).glob("mcpstack_*") if p.is_dir()]
     rows.append(("Package dirs", ", ".join(p.name for p in pkg_dirs) or "(none)"))
     pt = (TEMPLATE_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    ep_ok = '[project.entry-points."mcpstack.tools"]' in pt
-    rows.append(("Entry point", "present" if ep_ok else "missing"))
+
+    # Check both entry-point groups
+    ep_tools_ok = '[project.entry-points."mcpstack.tools"]' in pt
+    ep_clis_ok = '[project.entry-points."mcpstack.tool_clis"]' in pt
+    rows.append(("Entry point (tools)", "present" if ep_tools_ok else "missing"))
+    rows.append(("Entry point (tool_clis)", "present" if ep_clis_ok else "missing"))
+
     ph = [f"{k} → `{v}`" for k, v in PLACEHOLDERS.items()]
     rows.append(("Placeholders", "; ".join(ph)))
 
