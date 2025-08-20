@@ -34,18 +34,18 @@ solid foundational skeleton builder.
 
 **Wait, what is a Model Context Protocol (MCP) & `MCPStack` — In layman's terms ?**
 
-The Model Context Protocol (MCP) standardises interactions with machine learning (Large Language) models, 
-enabling tools and libraries to communicate successfully with a uniform workflow. 
+The Model Context Protocol (MCP) standardises interactions with machine learning (Large Language) models,
+enabling tools and libraries to communicate successfully with a uniform workflow.
 
 On the other hand, `MCPStack` is a framework that implements the protocol, and most importantly, allowing
-developers to create pipelines by stacking MCP tools of interest and launching them all in Claude Desktop. 
+developers to create pipelines by stacking MCP tools of interest and launching them all in Claude Desktop.
 This allows the LLM to use all the tools stacked, and of course, if a tool is not of interest, do not include it in the
 pipeline and the LLM won't have access to it.
 
 ## Installation
 
 > [!NOTE]
-> As this repository is a template, you can always create a new repository from this template. Use 
+> As this repository is a template, you can always create a new repository from this template. Use
 > the "Use this template" button on the top right of the GitHub UI to create a new repository based on this template.
 
 Meanwhile, you may alos clone this repository and install it locally to start building your own `MStack` MCP tool.
@@ -87,7 +87,7 @@ pre-commit install
 
 ## Create Your Tool's Skeleton
 
-Once dependencies are installed, you can use the `mcpstack_tool` CLI to bootstrap and customise your tool’s skeleton.  
+Once dependencies are installed, you can use the `mcpstack_tool` CLI to bootstrap and customise your tool’s skeleton.
 Every commands is run with `uv run mcpstack_tool.py` or `python mcpstack_tool.py` if you are not using `UV`, followed by the command you want to run; as follows:
 
 <img src="assets/readme/help.gif" width="61.8%" align="left" style="border-radius: 10px;"/>

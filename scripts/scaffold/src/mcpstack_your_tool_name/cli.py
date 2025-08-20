@@ -1,13 +1,14 @@
 import json
-from typing import Annotated, Optional
+from typing import Annotated
+
 import typer
 from beartype import beartype
+from MCPStack.core.tool.cli.base import BaseToolCLI, ToolConfig
 from rich.console import Console
 from rich.panel import Panel
 
-from MCPStack.core.tool.cli.base import BaseToolCLI, ToolConfig
-
 console = Console()
+
 
 @beartype
 class YourToolCLI(BaseToolCLI):
@@ -27,7 +28,10 @@ class YourToolCLI(BaseToolCLI):
     @classmethod
     def init(
         cls,
-        prefix: Annotated[Optional[str], typer.Option("--prefix", "-p", help="Greeting prefix emoji/text.")] = "🎯",
+        prefix: Annotated[
+            str | None,
+            typer.Option("--prefix", "-p", help="Greeting prefix emoji/text."),
+        ] = "🎯",
     ) -> None:
         console.print(f"[green]✅ Set default prefix to '{prefix}'[/green]")
         console.print("Export and run:")
@@ -36,11 +40,22 @@ class YourToolCLI(BaseToolCLI):
     @classmethod
     def configure(
         cls,
-        greeting: Annotated[Optional[str], typer.Option("--greeting", "-g", help="Greeting word.")] = None,
-        targets: Annotated[Optional[str], typer.Option("--targets", "-t", help="Comma-separated targets.")] = None,
-        prefix: Annotated[Optional[str], typer.Option("--prefix", "-p", help="Prefix emoji/text.")] = None,
-        output: Annotated[Optional[str], typer.Option("--output", "-o", help="Where to save config JSON.")] = None,
-        verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Print config.")] = False,
+        greeting: Annotated[
+            str | None, typer.Option("--greeting", "-g", help="Greeting word.")
+        ] = None,
+        targets: Annotated[
+            str | None, typer.Option("--targets", "-t", help="Comma-separated targets.")
+        ] = None,
+        prefix: Annotated[
+            str | None, typer.Option("--prefix", "-p", help="Prefix emoji/text.")
+        ] = None,
+        output: Annotated[
+            str | None,
+            typer.Option("--output", "-o", help="Where to save config JSON."),
+        ] = None,
+        verbose: Annotated[
+            bool, typer.Option("--verbose", "-v", help="Print config.")
+        ] = False,
     ) -> ToolConfig:
         env_vars = {}
         tool_params = {}
@@ -54,7 +69,9 @@ class YourToolCLI(BaseToolCLI):
         tool_params["greeting"] = greeting
 
         if targets:
-            tool_params["targets"] = [s.strip() for s in targets.split(",") if s.strip()]
+            tool_params["targets"] = [
+                s.strip() for s in targets.split(",") if s.strip()
+            ]
 
         cfg: ToolConfig = {"env_vars": env_vars, "tool_params": tool_params}
 
@@ -64,12 +81,20 @@ class YourToolCLI(BaseToolCLI):
 
         console.print(f"[green]✅ Saved your_tool_name config to {path}[/green]")
         if verbose:
-            console.print(Panel.fit(json.dumps(cfg, indent=2), title="[bold green]Configuration[/bold green]"))
+            console.print(
+                Panel.fit(
+                    json.dumps(cfg, indent=2),
+                    title="[bold green]Configuration[/bold green]",
+                )
+            )
         return cfg
 
     @classmethod
     def status(cls, verbose: bool = False) -> None:
         import os
+
         prefix = os.getenv("MCP_YOUR_TOOL_NAME_PREFIX", "")
         msg = f"Prefix: '{prefix or '[none]'}'"
-        console.print(Panel.fit(msg, title="[bold green]your_tool_name status[/bold green]"))
+        console.print(
+            Panel.fit(msg, title="[bold green]your_tool_name status[/bold green]")
+        )

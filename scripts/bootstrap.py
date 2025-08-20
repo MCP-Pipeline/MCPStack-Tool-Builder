@@ -1,22 +1,18 @@
 from __future__ import annotations
 
 import json
-import os
-import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Optional
 
-import typer
 import rich.box as box
+import typer
 from rich.cells import cell_len
 from rich.console import Console, Group
 from rich.panel import Panel
+from rich.prompt import Confirm, Prompt
 from rich.table import Table
 from rich.text import Text
-from rich.prompt import Confirm
-from rich.prompt import Prompt
 from rich_pyfiglet import RichFiglet
 
 console = Console()
@@ -45,6 +41,7 @@ def _display_banner() -> None:
 
     try:
         from mcpstack_your_tool_name import __version__  # type: ignore
+
         version = __version__
     except Exception:
         version = "0.0.0"
@@ -136,9 +133,9 @@ FILE_GLOBS = ("**/*.py", "**/*.md", "**/*.toml", "**/*.yaml", "**/*.yml")
 def derive_names(
     tool_slug: str,
     class_name: str,
-    package_name: Optional[str] = None,
-    dist_name: Optional[str] = None,
-    env_prefix: Optional[str] = None,
+    package_name: str | None = None,
+    dist_name: str | None = None,
+    env_prefix: str | None = None,
 ):
     """Derive canonical naming variants for the tool.
 
@@ -178,6 +175,7 @@ def is_valid_names(names: dict) -> tuple[bool, list[str]]:
     """
     errs = []
     import re as _re
+
     if not _re.fullmatch(r"[a-z][a-z0-9_]*", names["tool_slug"]):
         errs.append("tool-slug must be snake_case: [a-z][a-z0-9_]*")
     if not _re.fullmatch(r"[A-Z][A-Za-z0-9_]*", names["class_name"]):
@@ -202,6 +200,7 @@ def replace_in_text(text: str, mapping: dict) -> str:
         The transformed text with placeholders replaced.
     """
     import re as _re
+
     patterns = [
         (r"\bmcpstack_your_tool_name\b", mapping["package_name"]),
         (r"\bmcpstack-your-tool-name\b", mapping["dist_name"]),
@@ -217,14 +216,20 @@ def replace_in_text(text: str, mapping: dict) -> str:
 
 
 IGNORED_PARTS = {
-    ".venv", ".git", "__pycache__", ".mypy_cache", ".pytest_cache",
-    ".ruff_cache", "node_modules"
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "node_modules",
 }
 IGNORED_SUFFIXES = {".pyc", ".pyo", ".DS_Store"}
 
 TEMPLATE_ROOT = Path(__file__).resolve().parents[1]
 SRC = TEMPLATE_ROOT / "src"
 TESTS = TEMPLATE_ROOT / "tests"
+
 
 def _skip_path(p: Path) -> bool:
     """Determine whether a path should be excluded from processing.
@@ -242,7 +247,7 @@ def _skip_path(p: Path) -> bool:
     return False
 
 
-def iter_files() -> "iter[Path]":
+def iter_files() -> iter[Path]:
     """Yield file paths to be considered for replacement and checks.
 
     Yields:
@@ -275,7 +280,7 @@ def _save_config(cfg: dict) -> None:
     CONFIG_PATH.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
 
-def _load_config() -> Optional[dict]:
+def _load_config() -> dict | None:
     """Load configuration from ``.mcpstack-tool.json`` if available.
 
     Returns:
@@ -290,11 +295,11 @@ def _load_config() -> Optional[dict]:
 
 
 def _ensure_names_from_sources(
-    tool_slug: Optional[str],
-    class_name: Optional[str],
-    package_name: Optional[str],
-    dist_name: Optional[str],
-    env_prefix: Optional[str],
+    tool_slug: str | None,
+    class_name: str | None,
+    package_name: str | None,
+    dist_name: str | None,
+    env_prefix: str | None,
     prefer_config: bool = True,
 ) -> dict:
     """Resolve names from CLI flags, saved config, or placeholders.
@@ -330,12 +335,32 @@ def _ensure_names_from_sources(
 
 @app.command(help="Create a config via an interactive wizard (no file changes).")
 def init(
-    tool_slug: Optional[str] = typer.Option(None, "--tool-slug", "-s", help="snake_case tool name (e.g. mimic_tool)"),
-    class_name: Optional[str] = typer.Option(None, "--class-name", "-c", help="PascalCase tool class (e.g. MimicTool)"),
-    package_name: Optional[str] = typer.Option(None, "--package-name", "-p", help="Python package name (e.g. mcpstack_mimic_tool)"),
-    dist_name: Optional[str] = typer.Option(None, "--dist-name", "-d", help="Distribution/PyPI name (e.g. mcpstack-mimic-tool)"),
-    env_prefix: Optional[str] = typer.Option(None, "--env-prefix", "-e", help="ENV prefix (UPPER_SNAKE, e.g. MCP_MIMIC_TOOL)"),
-    non_interactive: bool = typer.Option(False, "--non-interactive", help="Don't prompt; use only provided flags or defaults"),
+    tool_slug: str | None = typer.Option(
+        None, "--tool-slug", "-s", help="snake_case tool name (e.g. mimic_tool)"
+    ),
+    class_name: str | None = typer.Option(
+        None, "--class-name", "-c", help="PascalCase tool class (e.g. MimicTool)"
+    ),
+    package_name: str | None = typer.Option(
+        None,
+        "--package-name",
+        "-p",
+        help="Python package name (e.g. mcpstack_mimic_tool)",
+    ),
+    dist_name: str | None = typer.Option(
+        None,
+        "--dist-name",
+        "-d",
+        help="Distribution/PyPI name (e.g. mcpstack-mimic-tool)",
+    ),
+    env_prefix: str | None = typer.Option(
+        None, "--env-prefix", "-e", help="ENV prefix (UPPER_SNAKE, e.g. MCP_MIMIC_TOOL)"
+    ),
+    non_interactive: bool = typer.Option(
+        False,
+        "--non-interactive",
+        help="Don't prompt; use only provided flags or defaults",
+    ),
 ) -> None:
     """Create and save the bootstrap configuration.
 
@@ -360,18 +385,34 @@ def init(
         ts_default = tool_slug or existing.get("tool_slug") or PLACEHOLDERS["tool_slug"]
         tool_slug = _ask(ts_default, "🔧 Tool slug (snake_case)")
 
-        cls_default = class_name or existing.get("class_name") or " ".join(
-            part.capitalize() for part in ts_default.split("_")
-        ).replace(" ", "")
+        cls_default = (
+            class_name
+            or existing.get("class_name")
+            or " ".join(part.capitalize() for part in ts_default.split("_")).replace(
+                " ", ""
+            )
+        )
         class_name = _ask(cls_default, "🏷️  Class name (PascalCase)")
 
-        pkg_default = package_name or existing.get("package_name") or f"mcpstack_{(tool_slug or ts_default)}"
+        pkg_default = (
+            package_name
+            or existing.get("package_name")
+            or f"mcpstack_{(tool_slug or ts_default)}"
+        )
         package_name = _ask(pkg_default, "📦 Package name (module)")
 
-        dist_default = dist_name or existing.get("dist_name") or f"mcpstack-{(tool_slug or ts_default).replace('_','-')}"
+        dist_default = (
+            dist_name
+            or existing.get("dist_name")
+            or f"mcpstack-{(tool_slug or ts_default).replace('_','-')}"
+        )
         dist_name = _ask(dist_default, "📦 Distribution name (PyPI, kebab-case)")
 
-        env_default = env_prefix or existing.get("env_prefix") or f"MCP_{(tool_slug or ts_default).upper()}"
+        env_default = (
+            env_prefix
+            or existing.get("env_prefix")
+            or f"MCP_{(tool_slug or ts_default).upper()}"
+        )
         env_prefix = _ask(env_default, "🔑 ENV prefix (UPPER_SNAKE)")
 
     names = derive_names(
@@ -384,12 +425,21 @@ def init(
 
     ok, errs = is_valid_names(names)
     if not ok:
-        console.print(Panel.fit("\n".join(errs), title="[red]Invalid names[/red]", border_style="red"))
+        console.print(
+            Panel.fit(
+                "\n".join(errs), title="[red]Invalid names[/red]", border_style="red"
+            )
+        )
         raise typer.Exit(code=1)
 
     cfg = {"names": names}
     _save_config(cfg)
-    console.print(Panel.fit(json.dumps(cfg, indent=2), title="[bold green]Saved .mcpstack-tool.json[/bold green]"))
+    console.print(
+        Panel.fit(
+            json.dumps(cfg, indent=2),
+            title="[bold green]Saved .mcpstack-tool.json[/bold green]",
+        )
+    )
 
     if Confirm.ask("👀 Run a preview now?", default=True):
         _do_preview(names)
@@ -397,14 +447,18 @@ def init(
         _do_apply(names)
 
 
-@app.command(help="Show replacements and an example diff using saved config (or flags).")
+@app.command(
+    help="Show replacements and an example diff using saved config (or flags)."
+)
 def preview(
-    tool_slug: Optional[str] = typer.Option(None, "--tool-slug", "-s"),
-    class_name: Optional[str] = typer.Option(None, "--class-name", "-c"),
-    package_name: Optional[str] = typer.Option(None, "--package-name", "-p"),
-    dist_name: Optional[str] = typer.Option(None, "--dist-name", "-d"),
-    env_prefix: Optional[str] = typer.Option(None, "--env-prefix", "-e"),
-    use_config: bool = typer.Option(True, "--use-config/--no-config", help="Prefer saved .mcpstack-tool.json"),
+    tool_slug: str | None = typer.Option(None, "--tool-slug", "-s"),
+    class_name: str | None = typer.Option(None, "--class-name", "-c"),
+    package_name: str | None = typer.Option(None, "--package-name", "-p"),
+    dist_name: str | None = typer.Option(None, "--dist-name", "-d"),
+    env_prefix: str | None = typer.Option(None, "--env-prefix", "-e"),
+    use_config: bool = typer.Option(
+        True, "--use-config/--no-config", help="Prefer saved .mcpstack-tool.json"
+    ),
 ) -> None:
     """Preview derived names and show a sample transformed file.
 
@@ -419,7 +473,14 @@ def preview(
     Returns:
         None
     """
-    names = _ensure_names_from_sources(tool_slug, class_name, package_name, dist_name, env_prefix, prefer_config=use_config)
+    names = _ensure_names_from_sources(
+        tool_slug,
+        class_name,
+        package_name,
+        dist_name,
+        env_prefix,
+        prefer_config=use_config,
+    )
     _do_preview(names)
 
 
@@ -432,7 +493,11 @@ def _do_preview(names: dict) -> None:
     Returns:
         None
     """
-    console.print(Panel.fit(json.dumps(names, indent=2), title="[bold green]Derived Names[/bold green]"))
+    console.print(
+        Panel.fit(
+            json.dumps(names, indent=2), title="[bold green]Derived Names[/bold green]"
+        )
+    )
     sample_path = SRC / "mcpstack_your_tool_name" / "tool.py"
     if sample_path.exists():
         sample = sample_path.read_text(encoding="utf-8")
@@ -443,14 +508,18 @@ def _do_preview(names: dict) -> None:
         console.print("[yellow]Example file not found; showing only names.[/yellow]")
 
 
-@app.command(help="Apply replacements & move the package directory (uses saved config by default).")
+@app.command(
+    help="Apply replacements & move the package directory (uses saved config by default)."
+)
 def apply(
-    tool_slug: Optional[str] = typer.Option(None, "--tool-slug", "-s"),
-    class_name: Optional[str] = typer.Option(None, "--class-name", "-c"),
-    package_name: Optional[str] = typer.Option(None, "--package-name", "-p"),
-    dist_name: Optional[str] = typer.Option(None, "--dist-name", "-d"),
-    env_prefix: Optional[str] = typer.Option(None, "--env-prefix", "-e"),
-    use_config: bool = typer.Option(True, "--use-config/--no-config", help="Prefer saved .mcpstack-tool.json"),
+    tool_slug: str | None = typer.Option(None, "--tool-slug", "-s"),
+    class_name: str | None = typer.Option(None, "--class-name", "-c"),
+    package_name: str | None = typer.Option(None, "--package-name", "-p"),
+    dist_name: str | None = typer.Option(None, "--dist-name", "-d"),
+    env_prefix: str | None = typer.Option(None, "--env-prefix", "-e"),
+    use_config: bool = typer.Option(
+        True, "--use-config/--no-config", help="Prefer saved .mcpstack-tool.json"
+    ),
     yes: bool = typer.Option(False, "--yes", "-y", help="Proceed without confirmation"),
 ) -> None:
     """Execute replacements across files and relocate the package directory.
@@ -464,7 +533,14 @@ def apply(
         use_config: Prefer values from the saved configuration.
         yes: Skip the confirmation prompt.
     """
-    names = _ensure_names_from_sources(tool_slug, class_name, package_name, dist_name, env_prefix, prefer_config=use_config)
+    names = _ensure_names_from_sources(
+        tool_slug,
+        class_name,
+        package_name,
+        dist_name,
+        env_prefix,
+        prefer_config=use_config,
+    )
     _do_apply(names, yes=yes)
 
 
@@ -501,7 +577,9 @@ def _do_apply(names: dict, yes: bool = False) -> None:
     if moved:
         msg += f" Moved package dir to: {new_pkg_dir}"
     console.print(Panel.fit(msg, title="[green]Success[/green]"))
-    console.print("- uv lock && uv sync\n- uv run pytest -q\n- uv run mcpstack list-tools")
+    console.print(
+        "- uv lock && uv sync\n- uv run pytest -q\n- uv run mcpstack list-tools"
+    )
 
 
 @app.command(help="Validate current repository state and placeholder presence.")
@@ -521,14 +599,20 @@ def validate() -> None:
         if not found:
             missing.append(val)
     if missing:
-        console.print(Panel.fit("\n".join(missing), title="[yellow]Some placeholders not found[/yellow]"))
+        console.print(
+            Panel.fit(
+                "\n".join(missing), title="[yellow]Some placeholders not found[/yellow]"
+            )
+        )
     else:
-        console.print(Panel.fit("All core placeholders present.", title="[green]OK[/green]"))
+        console.print(
+            Panel.fit("All core placeholders present.", title="[green]OK[/green]")
+        )
 
 
 @app.command(help="Reset files from scaffold.")
 def reset(
-    hard: bool = typer.Option(False, "--hard", help="Overwrite with pristine scaffold")
+    hard: bool = typer.Option(False, "--hard", help="Overwrite with pristine scaffold"),
 ) -> None:
     """Restore files from the scaffold directory.
 
@@ -542,18 +626,23 @@ def reset(
         typer.Exit: If scaffold is missing or operation is aborted.
     """
     if not hard:
-        console.print("Tip: use git restore/clean or run with --hard (to overwrite everything — To Your Own Risk!)")
+        console.print(
+            "Tip: use git restore/clean or run with --hard (to overwrite everything — To Your Own Risk!)"
+        )
         raise typer.Exit()
 
     if not SCAFFOLD_DIR.exists():
-        console.print(Panel.fit("scaffold/ not found.", title="[red]Missing scaffold[/red]"))
+        console.print(
+            Panel.fit("scaffold/ not found.", title="[red]Missing scaffold[/red]")
+        )
         raise typer.Exit(code=1)
 
     scaffold_src = SCAFFOLD_DIR / "src"
     scaffold_tests = SCAFFOLD_DIR / "tests"
     scaffold_pyproject = SCAFFOLD_DIR / "pyproject.toml"
     scaffold_readme = (
-        SCAFFOLD_DIR / "README.md" if (SCAFFOLD_DIR / "README.md").exists()
+        SCAFFOLD_DIR / "README.md"
+        if (SCAFFOLD_DIR / "README.md").exists()
         else SCAFFOLD_DIR / "README.rst"
     )
 
@@ -562,7 +651,11 @@ def reset(
     if scaffold_src.exists():
         shutil.copytree(scaffold_src, SRC)
     else:
-        console.print(Panel.fit("scaffold/src not found — skipped.", title="[yellow]Warning[/yellow]"))
+        console.print(
+            Panel.fit(
+                "scaffold/src not found — skipped.", title="[yellow]Warning[/yellow]"
+            )
+        )
 
     TESTS = TEMPLATE_ROOT / "tests"
     if TESTS.exists():
@@ -570,26 +663,43 @@ def reset(
     if scaffold_tests.exists():
         shutil.copytree(scaffold_tests, TESTS)
     else:
-        console.print(Panel.fit("scaffold/tests not found — skipped.", title="[yellow]Warning[/yellow]"))
+        console.print(
+            Panel.fit(
+                "scaffold/tests not found — skipped.", title="[yellow]Warning[/yellow]"
+            )
+        )
 
     if scaffold_pyproject.exists():
         shutil.copy2(scaffold_pyproject, TEMPLATE_ROOT / "pyproject.toml")
     else:
-        console.print(Panel.fit("scaffold/pyproject.toml not found — skipped.", title="[yellow]Warning[/yellow]"))
+        console.print(
+            Panel.fit(
+                "scaffold/pyproject.toml not found — skipped.",
+                title="[yellow]Warning[/yellow]",
+            )
+        )
 
     if scaffold_readme.exists():
         dest_name = scaffold_readme.name
         shutil.copy2(scaffold_readme, TEMPLATE_ROOT / dest_name)
     else:
-        console.print(Panel.fit("scaffold/README not found — skipped.", title="[yellow]Warning[/yellow]"))
+        console.print(
+            Panel.fit(
+                "scaffold/README not found — skipped.", title="[yellow]Warning[/yellow]"
+            )
+        )
 
-    console.print(Panel.fit(
-        "src/, tests/, pyproject.toml and README restored from scaffold.",
-        title="[green]Reset complete[/green]"
-    ))
+    console.print(
+        Panel.fit(
+            "src/, tests/, pyproject.toml and README restored from scaffold.",
+            title="[green]Reset complete[/green]",
+        )
+    )
 
 
-@app.command(help="Health-check: entry points, package dir, placeholders, and CI files.")
+@app.command(
+    help="Health-check: entry points, package dir, placeholders, and CI files."
+)
 def doctor() -> None:
     """Show a simple health report for the repository state.
 

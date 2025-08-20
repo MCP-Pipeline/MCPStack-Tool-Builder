@@ -30,7 +30,7 @@ uv lock               # update lockfile
 See the uv documentation for installation instructions.
 
 Branches & Commits
-* Branch from main: feat/<slug>, fix/<slug>, chore/<slug>. 
+* Branch from main: feat/<slug>, fix/<slug>, chore/<slug>.
 * Keep commits focused and descriptive. Conventional commits are welcome: feat:, fix:, chore:, docs:.
 
 Code Style
