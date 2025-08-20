@@ -16,9 +16,9 @@ dependencies = [
   "beartype>=0.21.0",
   "rich>=13.0.0",
   "rich-argparse>=1.4.0",
-  "mcpstack",
   "rich-pyfiglet>=1.0.0",
   "click>=8.1.8",
+  "mcpstack>=0.0.2",
 ]
 
 [project.optional-dependencies]
@@ -48,6 +48,3 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-
-[tool.uv.sources]
-mcpstack = { path = "../../MCPStack" }
